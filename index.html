@@ -66,6 +66,22 @@
             z-index: 4;
         }
 
+        .envelope-greeting {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            text-align: center;
+            font-size: 0.5rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #817366;
+            font-family: 'Montserrat', sans-serif;
+            z-index: 5;
+            pointer-events: none;
+        }
+
         /* Inner Letter Card */
         .letter-card {
             position: absolute;
@@ -122,8 +138,9 @@
 
         /* Open State Animations */
         .envelope-wrapper.open .envelope-flap {
-            transform: rotateX(180px);
+            transform: rotateX(180deg);
             z-index: 1;
+            backface-visibility: hidden;
         }
         .envelope-wrapper.open .wax-seal {
             opacity: 0;
@@ -154,13 +171,14 @@
     <!-- 1. LUXURY 3D ENVELOPE INTRO SCREEN -->
     <div id="envelope-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden">
         <div class="text-center text-stone-300 mb-12 px-4">
-            <p class="font-sans-alt tracking-[0.3em] text-xs uppercase mb-4 text-stone-400">Together with our families</p>
+            <p class="font-sans-alt tracking-[0.3em] text-xs uppercase mb-6 text-stone-400">You are Invited </p>
             <h1 class="font-handwritten text-3xl md:text-4xl text-stone-900">Shashi & Thimira</h1>
         </div>
 
         <!-- 3D Envelope Container -->
         <div class="envelope-wrapper" id="envelope">
             <div class="envelope-flap"></div>
+            <div class="envelope-greeting">OUR DEAR GUEST</div>
             <div class="envelope-front"></div>
             <div class="envelope-bottom"></div>
             <div class="wax-seal flex items-center justify-center"><i class="fa-solid fa-heart text-[9px] text-amber-400"></i></div>
@@ -357,7 +375,7 @@
 
         <!-- FOOTER -->
         <footer class="py-10 bg-[#faf9f6] text-center text-xs font-sans-alt text-stone-400 tracking-widest uppercase">
-            Shashi & Thimira • 28.11.2026
+            Shashi & Thimira <br> 28.11.2026
         </footer>
     </div>
 
