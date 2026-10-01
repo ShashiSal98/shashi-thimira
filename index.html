@@ -80,9 +80,9 @@
             font-family: 'Montserrat', sans-serif;
             z-index: 5;
             pointer-events: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            line-height: 1.4;
         }
 
         /* Inner Letter Card */
@@ -393,10 +393,10 @@
         // 0. Personalize with the guest name passed in the URL, e.g. ?name=Mr%20Perera
         (function personalizeGuestName() {
             const params = new URLSearchParams(window.location.search);
-            const raw = params.get('name') || params.get('invitee');
+            const raw = params.get('guestName') || params.get('name') || params.get('invitee');
             if (raw) {
-                // Basic decode + strip any HTML tags to keep this safe
-                const guestName = decodeURIComponent(raw).replace(/<[^>]*>?/gm, '').trim();
+                // URLSearchParams already decodes the value; textContent keeps it safe.
+                const guestName = raw.replace(/<[^>]*>?/gm, '').trim();
                 if (guestName) {
                     const nameEl = document.getElementById('guestNameDisplay');
                     if (nameEl) nameEl.textContent = guestName;
