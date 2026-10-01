@@ -390,17 +390,30 @@
 
     <!-- CODE INTERACTION HANDLERS -->
     <script>
-        // 0. Personalize with the guest name passed in the URL, e.g. ?name=Mr%20Perera
+        // 0. Personalize with ?guestName=Asanka%20Ayya%20%26%20Family
         (function personalizeGuestName() {
-            const query = window.location.search.slice(1);
-            const nameParam = ['guestName', 'name', 'invitee']
-                .map(key => ({ key, match: query.match(new RegExp(`(?:^|&)${key}=([\\s\\S]*?)(?=&[^&=]+=|$)`, 'i')) }))
-                .find(param => param.match);
-            const raw = nameParam
-                ? new URLSearchParams(`${nameParam.key}=${nameParam.match[1]}`).get(nameParam.key)
-                : null;
-            if (raw) {
-                // URLSearchParams already decodes the value; textContent keeps it safe.
+            const params = new URLSearchParams(window.location.search);
+            const guestNameParam = ['guestName', 'name', 'invitee'].find(key => params.has(key));
+            if (guestNameParam) {
+                // Recover bare ampersand segments (e.g. "& Family") while still
+                // allowing subsequent query parameters such as "&source=email".
+                const queryParts = window.location.search.slice(1).split('&');
+                const paramIndex = queryParts.findIndex(part =>
+                    decodeURIComponent(part.split('=')[0].replace(/\+/g, ' ')) === guestNameParam
+                );
+                let encodedName = queryParts[paramIndex].slice(queryParts[paramIndex].indexOf('=') + 1);
+                for (let i = paramIndex + 1; i < queryParts.length && !queryParts[i].includes('='); i++) {
+                    encodedName += '&' + queryParts[i];
+                }
+
+                let raw;
+                try {
+                    raw = decodeURIComponent(encodedName.replace(/\+/g, ' '));
+                } catch {
+                    raw = params.get(guestNameParam);
+                }
+
+                // textContent keeps the personalized name safe to display.
                 const guestName = raw.replace(/<[^>]*>?/gm, '').trim();
                 if (guestName) {
                     const nameEl = document.getElementById('guestNameDisplay');
