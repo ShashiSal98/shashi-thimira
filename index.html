@@ -393,7 +393,24 @@
         // 0. Personalize with the guest name passed in the URL, e.g. ?name=Mr%20Perera
         (function personalizeGuestName() {
             const params = new URLSearchParams(window.location.search);
-            const raw = params.get('guestName') || params.get('name') || params.get('invitee');
+            const rawGuestName = window.location.search
+                .replace(/^\?/, '')
+                .split('&')
+                .reduce((parts, part) => {
+                    if (parts.length && !part.includes('=')) parts[parts.length - 1] += '&' + part;
+                    else parts.push(part);
+                    return parts;
+                }, [])
+                .find(part => part.startsWith('guestName='));
+            let guestNameParam = params.get('guestName');
+            if (rawGuestName) {
+                try {
+                    guestNameParam = decodeURIComponent(rawGuestName.slice('guestName='.length).replace(/\+/g, ' '));
+                } catch {
+                    guestNameParam = rawGuestName.slice('guestName='.length);
+                }
+            }
+            const raw = guestNameParam || params.get('name') || params.get('invitee');
             if (raw) {
                 // URLSearchParams already decodes the value; textContent keeps it safe.
                 const guestName = raw.replace(/<[^>]*>?/gm, '').trim();
