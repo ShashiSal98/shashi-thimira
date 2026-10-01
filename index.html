@@ -417,7 +417,18 @@
                 const guestName = raw.replace(/<[^>]*>?/gm, '').trim();
                 if (guestName) {
                     const nameEl = document.getElementById('guestNameDisplay');
-                    if (nameEl) nameEl.textContent = guestName;
+                    if (nameEl) {
+                        nameEl.replaceChildren();
+                        guestName.split('&').forEach((part, index, parts) => {
+                            nameEl.append(document.createTextNode(part));
+                            if (index < parts.length - 1) {
+                                const ampersand = document.createElement('span');
+                                ampersand.className = 'font-handwritten not-italic mx-1';
+                                ampersand.textContent = '&';
+                                nameEl.append(ampersand);
+                            }
+                        });
+                    }
                     
                     // Dynamically set Envelope Greeting to: Dear 'Guest Name'
                     const envelopeEl = document.getElementById('envelopeGreeting');
